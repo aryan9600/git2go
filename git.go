@@ -148,9 +148,6 @@ func initLibGit2() {
 	// with multi-threading support. The most likely outcome is a segfault
 	// or panic at an incomprehensible time, so let's make it easy by
 	// panicking right here.
-	if features&FeatureThreads == 0 {
-		panic("libgit2 was not built with threading support")
-	}
 
 	if features&FeatureHTTPS == 0 {
 		if err := registerManagedHTTP(); err != nil {
