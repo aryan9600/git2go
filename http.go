@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"sync"
 )
 
@@ -37,24 +36,7 @@ func registerManagedHTTP() error {
 }
 
 func httpSmartSubtransportFactory(remote *Remote, transport *Transport) (SmartSubtransport, error) {
-	var proxyFn func(*http.Request) (*url.URL, error)
-	proxyOpts, err := transport.SmartProxyOptions()
-	if err != nil {
-		return nil, err
-	}
-	switch proxyOpts.Type {
-	case ProxyTypeNone:
-		proxyFn = nil
-	case ProxyTypeAuto:
-		proxyFn = http.ProxyFromEnvironment
-	case ProxyTypeSpecified:
-		parsedUrl, err := url.Parse(proxyOpts.Url)
-		if err != nil {
-			return nil, err
-		}
-
-		proxyFn = http.ProxyURL(parsedUrl)
-	}
+	proxyFn := http.ProxyFromEnvironment
 
 	return &httpSmartSubtransport{
 		transport: transport,
